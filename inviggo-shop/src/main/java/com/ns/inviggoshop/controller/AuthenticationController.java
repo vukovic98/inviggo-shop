@@ -68,9 +68,7 @@ public class AuthenticationController {
 			// Vrati token kao odgovor na uspesnu autentifikaciju
 			return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn, username, verified));
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
 		}
 
 	}

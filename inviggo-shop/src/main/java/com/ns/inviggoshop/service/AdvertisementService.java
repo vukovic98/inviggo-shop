@@ -83,7 +83,7 @@ public class AdvertisementService {
 	}
 
 	public Page<Advertisement> findAllPageable(Pageable pageable) {
-		return this.adRepository.findAll(pageable);
+		return this.adRepository.findAllAdds(pageable);
 	}
 
 	public Advertisement create(AddAdvertisementDTO dto, String username) {

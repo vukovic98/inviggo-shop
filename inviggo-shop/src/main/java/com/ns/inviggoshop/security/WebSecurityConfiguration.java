@@ -1,13 +1,10 @@
 package com.ns.inviggoshop.security;
 
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +17,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.ns.inviggoshop.security.auth.RestAuthenticationEntryPoint;
 import com.ns.inviggoshop.security.auth.TokenAuthenticationFilter;
-import com.ns.inviggoshop.security.auth.TokenAuthenticationProvider;
 import com.ns.inviggoshop.service.CustomUserDetailsService;
 
 @Configuration
@@ -43,28 +39,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	// lozinkom pokusa da pristupi resursu
 	@Autowired
 	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-	
-	@Autowired
-	TokenAuthenticationProvider authenticationProvider;
 
-	// Registrujemo authentication manager koji ce da uradi autentifikaciju
-	// korisnika za nas
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return new ProviderManager(Collections.singletonList(authenticationProvider));
-	}
+    // Registrujemo authentication manager koji ce da uradi autentifikaciju korisnika za nas
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-	// Definisemo uputstvo za authentication managera koji servis da koristi da
-	// izvuce podatke o korisniku koji zeli da se autentifikuje,
-	// kao i kroz koji enkoder da provuce lozinku koju je dobio od klijenta u
-	// zahtevu da bi adekvatan hash koji dobije kao rezultat bcrypt algoritma
-	// uporedio sa onim koji se nalazi u bazi (posto se u bazi ne cuva plain
-	// lozinka)
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-	}
+    // Definisemo uputstvo za authentication managera koji servis da koristi da izvuce podatke o korisniku koji zeli da se autentifikuje,
+    //kao i kroz koji enkoder da provuce lozinku koju je dobio od klijenta u zahtevu da bi adekvatan hash koji dobije kao rezultat bcrypt algoritma uporedio sa onim koji se nalazi u bazi (posto se u bazi ne cuva plain lozinka)
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+    }
 
 	// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo
 	// njene metode za rad sa JWT u TokenAuthenticationFilteru
@@ -109,7 +97,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		// TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
 		web.ignoring().antMatchers(HttpMethod.POST, "/advertisement/filter/by-page/{\\d+}");
-		web.ignoring().antMatchers(HttpMethod.GET, "/advertisement/{\\d+}", "/advertisement/by-page/{\\d+}");
+		web.ignoring().antMatchers(HttpMethod.GET, "/advertisement/{\\d+}", "/advertisement/by-page/**");
 		
 		
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html",

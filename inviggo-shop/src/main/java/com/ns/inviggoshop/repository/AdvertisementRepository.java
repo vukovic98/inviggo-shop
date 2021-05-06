@@ -13,31 +13,34 @@ import com.ns.inviggoshop.beans.Category;
 @Repository
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
 
-	@Query(value = "select * from advertisement where user_id = :user_id", nativeQuery = true)
+	@Query(value = "select * from advertisement where user_id = :user_id order by date desc", nativeQuery = true)
 	public Page<Advertisement> findMyAdds(Pageable pageRequest, @Param("user_id") long user_id);
 
 	@Query(value = "select max(price) from advertisement", nativeQuery = true)
 	public double findMaxPrice();
+	
+	@Query(value = "select * from advertisement order by date desc", nativeQuery = true)
+	public Page<Advertisement> findAllAdds(Pageable pageRequest);
 
 //	FILTER
 
-	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and ad.category = :category", nativeQuery = true)
+	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and ad.category = :category order by date desc", nativeQuery = true)
 	public Page<Advertisement> filterByAll(Pageable pageRequest, @Param("exp") String exp,
 			@Param("min_price") double minPrice, @Param("max_price") double maxPrice,
 			@Param("category") String category);
 
-	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price)", nativeQuery = true)
+	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) order by date desc", nativeQuery = true)
 	public Page<Advertisement> filterByNameAndPrice(Pageable pageRequest, @Param("exp") String exp,
 			@Param("min_price") double minPrice, @Param("max_price") double maxPrice);
 
 //	FILTER - MY ADDS
 
-	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and ad.category = :category and user_id = :user_id", nativeQuery = true)
+	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and ad.category = :category and user_id = :user_id order by date desc", nativeQuery = true)
 	public Page<Advertisement> filterMyAddsByAll(Pageable pageRequest, @Param("exp") String exp,
 			@Param("min_price") double minPrice, @Param("max_price") double maxPrice,
 			@Param("category") String category, @Param("user_id") long user_id);
 
-	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and user_id = :user_id", nativeQuery = true)
+	@Query(value = "select * from advertisement ad where lower(ad.name) like %:exp% and (ad.price between :min_price and :max_price) and user_id = :user_id order by date desc", nativeQuery = true)
 	public Page<Advertisement> filterMyAddssByNameAndPrice(Pageable pageRequest, @Param("exp") String exp,
 			@Param("min_price") double minPrice, @Param("max_price") double maxPrice, @Param("user_id") long user_id);
 }

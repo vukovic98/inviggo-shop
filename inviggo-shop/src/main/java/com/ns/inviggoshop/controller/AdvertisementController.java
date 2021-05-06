@@ -82,31 +82,6 @@ public class AdvertisementController {
 	public ResponseEntity<PageImplementation<AdvertisementDetailsDTO>> filterByPage(@PathVariable("pageNum") int pageNum,
 			@RequestBody FilterDTO dto) {
 
-		if (dto.isMyAdds()) {
-			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-					.getPrincipal();
-			String username = userDetails.getUsername();
-
-			User u = this.userService.findUserByUsername(username);
-
-			if (u != null) {
-				Pageable pageRequest = PageRequest.of(pageNum, 20);
-
-				Page<Advertisement> page = this.adService.filterMyAdds(pageRequest, dto, u.getId());
-
-				ArrayList<AdvertisementDetailsDTO> addsDTOS = this.addMapper.listToDto(page.toList());
-				Page<AdvertisementDetailsDTO> pageOffersDTOS = new PageImpl<>(addsDTOS, page.getPageable(),
-						page.getTotalElements());
-
-				PageImplMapper<AdvertisementDetailsDTO> pageMapper = new PageImplMapper<>();
-				PageImplementation<AdvertisementDetailsDTO> pageImpl = pageMapper.toPageImpl(pageOffersDTOS);
-
-				return new ResponseEntity<>(pageImpl, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-		} else {
-
 			Pageable pageRequest = PageRequest.of(pageNum, 20);
 
 			Page<Advertisement> page = this.adService.filter(pageRequest, dto);
@@ -119,9 +94,35 @@ public class AdvertisementController {
 			PageImplementation<AdvertisementDetailsDTO> pageImpl = pageMapper.toPageImpl(pageOffersDTOS);
 
 			return new ResponseEntity<>(pageImpl, HttpStatus.OK);
-		}
 	}
 
+	@PostMapping(path = "/filter-my-adds/by-page/{pageNum}")
+	public ResponseEntity<PageImplementation<AdvertisementDetailsDTO>> filterMyAddsByPage(@PathVariable("pageNum") int pageNum,
+			@RequestBody FilterDTO dto) {
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		String username = userDetails.getUsername();
+
+		User u = this.userService.findUserByUsername(username);
+
+		if (u != null) {
+			Pageable pageRequest = PageRequest.of(pageNum, 20);
+
+			Page<Advertisement> page = this.adService.filterMyAdds(pageRequest, dto, u.getId());
+
+			ArrayList<AdvertisementDetailsDTO> addsDTOS = this.addMapper.listToDto(page.toList());
+			Page<AdvertisementDetailsDTO> pageOffersDTOS = new PageImpl<>(addsDTOS, page.getPageable(),
+					page.getTotalElements());
+
+			PageImplMapper<AdvertisementDetailsDTO> pageMapper = new PageImplMapper<>();
+			PageImplementation<AdvertisementDetailsDTO> pageImpl = pageMapper.toPageImpl(pageOffersDTOS);
+
+			return new ResponseEntity<>(pageImpl, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
 	@GetMapping(path = "my-adds/by-page/{pageNum}")
 	@PreAuthorize("hasRole('ROLE_USER')")

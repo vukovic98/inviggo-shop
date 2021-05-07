@@ -42,6 +42,28 @@ const AddService = {
         }
     },
 
+    editAdvertisement: async function (dto) {
+        try{
+            const token = AuthService.getToken();
+            const {data} = await API.put(ENDPOINTS.ADDVERTISEMENT_ENDPOINT, dto, { headers: {"Authorization" : `Bearer ${token}`}});
+
+            return true;
+        } catch {
+            return false;
+        }
+    },
+
+    fetchAdvertisement: async function (id) {
+        try{
+            const token = AuthService.getToken();
+            const {data} = await API.get(ENDPOINTS.ADDVERTISEMENT_ENDPOINT + id, { headers: {"Authorization" : `Bearer ${token}`}});
+
+            return data;
+        } catch {
+            return null;
+        }
+    },
+
     filterAdds: async function (page, dto) {
         if(dto.myAdds) {
             try{

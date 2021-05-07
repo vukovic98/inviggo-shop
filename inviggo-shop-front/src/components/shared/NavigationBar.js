@@ -6,8 +6,6 @@ import Button from '@material-ui/core/Button';
 import {Link, useHistory} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import StoreIcon from '@material-ui/icons/Store';
-import Avatar from '@material-ui/core/Avatar';
-
 import AuthService from '../../services/Auth.service';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +59,7 @@ export default function NavigationBar() {
                   </>) : 
                   (<>
                     <p className="float-left mb-0 mr-5">{user}</p>
-                    <Link to={"add-advertisement"} className="nav-brand text-white" style={{textDecoration: 'none'}}>
+                    <Link to={"manage-advertisement"} className="nav-brand text-white" style={{textDecoration: 'none'}}>
                     <Button color="inherit" >Add Advertisement</Button>
                     </Link>
                     <Button onClick={logout} color="inherit" >Logout</Button>

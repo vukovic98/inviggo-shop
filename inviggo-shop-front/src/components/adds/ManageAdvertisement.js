@@ -1,30 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Col, Jumbotron, Form, Button } from 'react-bootstrap';
 import NavigationBar from '../shared/NavigationBar';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import AuthService from '../../services/Auth.service';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import AddService from '../../services/Adds.service';
+import { useParams } from 'react-router';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
 
-export default function AddAdvertisement() {
+export default function ManageAdvertisement() {
+
+    let {id} = useParams();
+
+    const [add, setAdd] = useState({});
+
+    useEffect(() => {
+        if(id && !isNaN(id)) {
+            AddService.fetchAdvertisement(id).then((res) => {
+                setAdd(res);
+            })
+        } else {
+            setAdd({});
+        }
+    }, [id]);
 
     const [open, setOpen] = useState(false);
 
 
     const formik = useFormik({
         initialValues: {
-            name: '',
-            description: '',
-            imageUrl: '',
-            price: '',
-            category: '',
-            city: ''
+            id: add.id || null,
+            name: add.name || '',
+            description: add.description || '',
+            imageUrl: add.imageUrl || '',
+            price: add.price || '',
+            category: add.category || '',
+            city: add.city || ''
         },
         validationSchema: Yup.object({
             name: Yup.string()
@@ -42,14 +57,22 @@ export default function AddAdvertisement() {
             .required('Required'),
         }),
         onSubmit: values => {
-            console.log("udje");
-            AddService.addAdvertisement(values).then((res) => {
-                if(res) {
-                    setOpen(true);
-                    formik.resetForm();
-                }
-            })
+            if(!add) {
+                AddService.addAdvertisement(values).then((res) => {
+                    if(res) {
+                        setOpen(true);
+                        formik.resetForm();
+                    }
+                });
+            } else {
+                AddService.editAdvertisement(values).then((res) => {
+                    if(res) {
+                        setOpen(true);
+                    }
+                });
+            }
         },
+        enableReinitialize: true
     });
 
     return(
@@ -61,7 +84,7 @@ export default function AddAdvertisement() {
                     as={Col} 
                     className="mt-5"
                 >
-                        <h3 className="text-center mb-4">Create Your Add</h3>
+                        <h3 className="text-center mb-4">{!isNaN(id) ? "Edit Your Add" : "Create Your Add"}</h3>
                         <Form.Row  className="text-left">
                             <Form.Group as={Col}>
                             <Form.Label>Name</Form.Label>
@@ -179,7 +202,7 @@ export default function AddAdvertisement() {
                 </Form>
                 <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
                     <Alert onClose={() => setOpen(false)} severity="success">
-                        Advertisement successfully added!
+                        {add ? "Advertisement successfully edited!":"Advertisement successfully added!"}
                     </Alert>
                 </Snackbar>
                 </Jumbotron>

@@ -7,6 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Filter from './Filter';
 import NavigationBar from './NavigationBar';
+import { useHistory } from 'react-router';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -19,11 +20,10 @@ export default function Home() {
     const [filterDto, setFilterDto] = useState({});
 
     const [page, setPage] = useState(1);
-    const [filterPage, setFilterPage] = useState(2);
     const [adds, setAdds] = useState([]);
     const [total, setTotal] = useState(0);
 
-
+    const history = useHistory();
 
     const loadAdds = () => {
         AddService.loadAdds(page-1).then((res) => {
@@ -77,9 +77,10 @@ export default function Home() {
             loadAdds();
     }, [page, filterDto]); 
 
-    // useEffect(() => {
-    //     loadFilterAdds();
-    // }, [filterDto]);
+    const handleClick = (id) => {
+        history.push("/advertisement/" + id);
+    }
+
 
     return(
         <div className="homePage pr-0 mr-0 row">
@@ -104,13 +105,13 @@ export default function Home() {
                         {
                             adds.length !== 0 ? adds.map((add) => {
                                 return <tr key={add.id}>
-                                    <td><img src={add.imageUrl} className="rounded-circle" style={{height: "120px", width: "120px"}}/></td>
-                                    <td className="align-middle">{add.name}</td>
-                                    <td className="align-middle">{add.price} €</td>
-                                    <td className="align-middle">{add.city}</td>
-                                    <td className="align-middle">{add.category}</td>
+                                    <td onClick={() => handleClick(add.id)} style={{'cursor': 'pointer'}} title="Click to see more!"><img src={add.imageUrl} className="rounded-circle" style={{height: "120px", width: "120px"}}/></td>
+                                    <td className="align-middle" style={{'cursor': 'pointer'}} onClick={() => handleClick(add.id)} title="Click to see more!">{add.name}</td>
+                                    <td className="align-middle" style={{'cursor': 'pointer'}} onClick={() => handleClick(add.id)} title="Click to see more!">{add.price} €</td>
+                                    <td className="align-middle" style={{'cursor': 'pointer'}} onClick={() => handleClick(add.id)} title="Click to see more!">{add.city}</td>
+                                    <td className="align-middle" style={{'cursor': 'pointer'}} onClick={() => handleClick(add.id)} title="Click to see more!">{add.category}</td>
                                     {AuthService.getLoggedUser() === add.user.username ? <td colSpan="2" className="p-auto align-middle">
-                                        <button className="w-100 btn btn-info">Edit</button>
+                                        <button className="w-100 btn btn-info" onClick={() => history.push("/manage-advertisement/" + add.id)}>Edit</button>
                                         <button className="w-100 btn btn-danger mt-3" onClick={() => deleteAdd(add.id)}>Delete</button>
                                     </td> : <td colSpan="2"></td>}
                                 </tr>

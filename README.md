@@ -21,8 +21,8 @@
      (for example: Spring Tool Suite) and run application as SpringBootApplication
 
 #### React App
-     Open React project in some code editor (for example: Visual Studio Code) and 
-     run in terminal npm start
+     Open React project in some code editor (for example: Visual Studio Code), 
+     run in terminal npm install react-scripts and then npm start.
 
 ### Licence
     MIT License

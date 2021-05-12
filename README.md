@@ -2,6 +2,10 @@
 * Vladimir Vuković
 
 ### Starting the apps
+
+#### Database
+      In order to start Spring Boot project, in MySQL Workbench, create SQLSchema named inviggo_shop, and then run Spring Boot Application.
+      After that, Spring Boot will create tables and relations between them. You can now populate tables by executing SQL script data.sql.
     
 #### SpringBoot App
      Open Spring Boot project in environment that supports Spring Boot Applications 

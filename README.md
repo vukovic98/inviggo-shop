@@ -8,14 +8,21 @@
       and then run Spring Boot Application.
       After that, Spring Boot will create tables and relations between them. You can now populate 
       tables by executing SQL script data.sql.
+      
+      User for database is:
+            spring.datasource.username=kts
+            spring.datasource.password=kts.nvt17,
+      but that can be changed in application.properties in Spring Boot Application. 
+      
+      Passwords in database are hashed, so when logging in, password for every user is 'vukovic'.
     
 #### SpringBoot App
      Open Spring Boot project in environment that supports Spring Boot Applications 
      (for example: Spring Tool Suite) and run application as SpringBootApplication
 
 #### React App
-     Open React project in some code editor (for example: Visual Studio Code) and 
-     run in terminal npm start
+     Open React project in some code editor (for example: Visual Studio Code), 
+     run in terminal npm install react-scripts and then npm start.
 
 ### Licence
     MIT License
